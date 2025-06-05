@@ -219,3 +219,15 @@ function getPugOwners(dogs) {
   | 3: reduce       | Medium  | ✅ Most efficient | ✅ Yes     | ✅ Best for **performance** |
   
   */
+
+/*
+Enter the matrix
+Write a function that takes a number and returns a matrix of nested arrays equal to the number passed. Each element in each subarray should be set to a value of null.
+generateMatrix(1) // returns [[null]]
+generateMatrix(2) // returns [[null, null], [null, null]]
+generateMatrix(3) // returns [[null, null, null], [null, null, null], [null, null, null]]
+  */
+
+function generateMatrix(number) {
+  return Array.from({ length: number }, () => Array(number).fill(null));
+}
