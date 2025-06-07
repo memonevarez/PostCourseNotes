@@ -231,3 +231,116 @@ generateMatrix(3) // returns [[null, null, null], [null, null, null], [null, nul
 function generateMatrix(number) {
   return Array.from({ length: number }, () => Array(number).fill(null));
 }
+
+/*
+Numbers ending with zeros are boring.
+They might be fun in your world, but not here.
+Get rid of them. Only the ending ones.
+
+1450   -> 145
+960000 -> 96
+1050   -> 105
+-1050  -> -105
+0      -> 0
+Note: Zero should be left as it is.
+*/
+
+function zeroRecursive(numArray) {
+  console.log(numArray);
+  if (numArray.at(-1) !== "0") return Number(numArray.join(""));
+  numArray.pop();
+  return zeroRecursive(numArray);
+}
+
+function noBoringZeros(n) {
+  return zeroRecursive(n.toString().split(""));
+}
+
+/*
+❌ Cons:
+Recursion is unnecessary here and can be expensive with large input.
+String/array conversion adds overhead.
+Mutates the input array (pop()), which can lead to bugs in other contexts.
+Less idiomatic for a simple task like trimming trailing zeroes.
+*/
+
+function noBoringZeros(n) {
+  if (n === 0) return 0;
+  while (Number.isInteger(n / 10)) {
+    n = n / 10;
+  }
+  return n;
+}
+/*
+✅ Pros:
+Efficient: Uses a simple loop (O(log₁₀ n)) — no array/string conversions.
+Clear: Expresses the logic in a minimal way.
+Avoids recursion: No risk of call stack overflow with large numbers.
+Handles 0 edge case explicitly.
+*/
+
+/*
+🏁 Final Verdict
+Function	Performance	Clarity	Risk of Error	Best Use Case
+Recursive (zeroRecursive)	❌ Slower (due to string/array + recursion)	❌ Verbose	❌ Stack overflow risk	❌ Avoid
+Iterative (while)	✅ Fast	✅ Clear	✅ Safe	✅ Use this
+*/
+
+/*
+Find the wrong way fruit
+This function takes an array of fruit (orchard) in the format:
+['apple', 'apple', 'apple', 'apple', 'elppa', 'apple']
+The fruit will all be the 'right way round' apart from 1 fruit!
+
+Your function should return its index position. So in this example, the function should return 4.
+Note: The fruit will not always be apple, but it will always be an orchard of the same kind of fruit.
+
+findWrongWayFruit(['apple', 'apple', 'elppa']) // returns 2
+findWrongWayFruit(['apple', 'elppa', 'apple']) // returns 1
+findWrongWayFruit(['banana', 'ananab', 'banana', 'banana']) // returns 1
+findWrongWayFruit(['apple', 'elppa']) // returns 0 as we can't tell which one is the right way round
+*/
+
+function findWrongWayFruit(orchard) {
+  const fruitCount = orchard.reduce((counterObj, currFruit) => {
+    counterObj[currFruit] = (counterObj[currFruit] || 0) + 1;
+    return counterObj;
+  }, {});
+  const oddFruit = Object.entries(fruitCount).find(
+    ([key, value]) => value === 1
+  );
+  return orchard.indexOf(oddFruit[0]);
+
+  //✅ Achieves exactly the same result as:
+  //const oddFruit = Object.keys(fruitCounts).find(fruit => fruitCounts[fruit] === 1);
+  //return orchard.findIndex(fruit => fruit === oddFruit);
+
+  /*
+🔍 Difference?
+Your version uses Object.entries() to get [key, value] pairs directly, so you can avoid extra lookups.
+The other version uses Object.keys() and then looks up fruitCounts[fruit] inside the callback.
+
+✅ Benefits of your version:
+Slightly cleaner if you already want both key and value at once.
+Avoids repeating the lookup (fruitCounts[fruit]).
+  */
+
+  for (const fruit in fruitCount) {
+    if (fruitCount[fruit] === 1) {
+      return orchard.indexOf(fruit);
+    }
+  }
+
+  for (const [key, value] in Object.entries(fruitCount)) {
+    if (value > 1) return orchard.indexOf(key);
+  }
+}
+
+/*
+🆚 Which is better?
+Aspect	 Version (for...in)	Alternative Version (find)
+Readability	Okay	✅ Slightly cleaner
+Conciseness	❌ Slightly more verbose	✅ More direct
+Performance	Equal (O(n))	Equal (O(n))
+Maintainability	❌ Manual loop	✅ Declarative with find
+  */
